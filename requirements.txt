@@ -1,0 +1,47 @@
+# Core Framework
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+
+# LangChain Ecosystem
+langchain
+langchain-core
+langchain-community
+langchain-openai
+langchain-anthropic
+langchain-google-genai
+langchain-qdrant
+langgraph
+
+# LLM Providers
+openai
+anthropic
+google-generativeai
+
+# Vector Database
+qdrant-client
+sentence-transformers
+
+# Memory
+redis
+
+# HTTP
+httpx
+requests
+
+# Date & Time
+pytz
+dateparser
+
+# Validation
+pydantic
+
+# Google Auth
+google-auth
+
+# Token Counting
+tiktoken
+
+# JSON Speedup
+orjson
