@@ -1,9 +1,10 @@
 import logging
 import requests
-from app.config import WHATSAPP_API_KEY, WHATSAPP_WORKSPACE_ID
+from app.config import WHATSAPP_API_KEY
 
 logger = logging.getLogger(__name__)
 URL = "https://whatsapp.limbu.ai/api/external/send"
+
 
 def send_whatsapp(phone, message, workspace_id=None):
     headers = {
@@ -12,11 +13,10 @@ def send_whatsapp(phone, message, workspace_id=None):
     }
     payload = {
         "phone": phone,
-        "message": message
-        
+        "message": message,
     }
 
-    logger.info(f"📤 SENDING | PHONE: {phone} | WORKSPACE: {WHATSAPP_WORKSPACE_ID}")
+    logger.info(f"📤 SENDING | PHONE: {phone}")
     logger.info(f"📦 PAYLOAD: {payload}")
 
     r = requests.post(URL, headers=headers, json=payload, timeout=30)
