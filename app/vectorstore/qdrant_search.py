@@ -1,50 +1,42 @@
 from qdrant_client import QdrantClient
-
 from openai import OpenAI
 
 from app.config import (
     OPENAI_API_KEY,
     QDRANT_URL,
     QDRANT_API_KEY,
-    COLLECTION_NAME
+    COLLECTION_NAME,
 )
 
-openai_client = OpenAI(
-    api_key=OPENAI_API_KEY
-)
+openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 qdrant = QdrantClient(
     url=QDRANT_URL,
-    api_key=QDRANT_API_KEY
+    api_key=QDRANT_API_KEY,
 )
 
 
-def embed_query(query):
-
+def embed_query(query: str):
     response = openai_client.embeddings.create(
         model="text-embedding-3-small",
-        input=query
+        input=query,
     )
-
     return response.data[0].embedding
 
 
-def search_knowledge(query):
-
+def search_knowledge(query: str) -> str:
     vector = embed_query(query)
 
-    results = qdrant.search(
+    response = qdrant.query_points(
         collection_name=COLLECTION_NAME,
-        query_vector=vector,
-        limit=5
+        query=vector,
+        limit=5,
     )
 
     context = []
-
-    for item in results:
-
-        context.append(
-            item.payload["text"]
-        )
+    for point in response.points:
+        payload = point.payload or {}
+        if "text" in payload:
+            context.append(payload["text"])
 
     return "\n".join(context)

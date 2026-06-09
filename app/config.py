@@ -13,4 +13,4 @@ QDRANT_URL = os.getenv("QDRANT_URL")
 
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 
-COLLECTION_NAME = "limbu_knowledge"
+COLLECTION_NAME = os.getenv("COLLECTION_NAME", "limbu_franchise")

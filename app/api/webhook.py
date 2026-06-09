@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter
 from fastapi import Request
 
@@ -8,6 +9,8 @@ from app.memory.redis_memory import (
     save_message
 )
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter()
 
 
@@ -16,12 +19,18 @@ async def webhook(request: Request):
 
     data = await request.json()
 
+    logger.info(f"📩 WEBHOOK RECEIVED: {data}")
+
     if data.get("event") != "message.received":
+        logger.info(f"⏭️ IGNORED EVENT: {data.get('event')}")
         return {"status": "ignored"}
 
     phone = data["contact"]["phone"]
-
+    workspace_id = data.get("workspace_id")
     user_message = data["message"]["content"]
+
+    logger.info(f"👤 FROM: {phone} | WORKSPACE: {workspace_id}")
+    logger.info(f"💬 USER MESSAGE: {user_message}")
 
     save_message(
         phone,
@@ -33,6 +42,8 @@ async def webhook(request: Request):
         user_message
     )
 
+    logger.info(f"🤖 BOT REPLY: {reply}")
+
     save_message(
         phone,
         "BOT",
@@ -41,8 +52,11 @@ async def webhook(request: Request):
 
     send_whatsapp(
         phone=phone,
-        message=reply
+        message=reply,
+        workspace_id=workspace_id
     )
+
+    logger.info(f"✅ REPLY SENT TO: {phone} | WORKSPACE: {workspace_id}")
 
     return {
         "status": "success"

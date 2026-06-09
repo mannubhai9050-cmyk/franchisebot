@@ -1,11 +1,14 @@
+import logging
 import requests
 
 from app.config import WHATSAPP_API_KEY
 
+logger = logging.getLogger(__name__)
+
 URL = "https://whatsapp.limbu.ai/api/external/send"
 
 
-def send_whatsapp(phone, message):
+def send_whatsapp(phone, message, workspace_id=None):
 
     headers = {
         "X-API-Key": WHATSAPP_API_KEY,
@@ -14,8 +17,14 @@ def send_whatsapp(phone, message):
 
     payload = {
         "phone": phone,
-        "message": message
+        "message": message,
     }
+
+    if workspace_id:
+        payload["workspace_id"] = workspace_id
+
+    logger.info(f"📤 SENDING WHATSAPP | PHONE: {phone} | WORKSPACE: {workspace_id}")
+    logger.info(f"📦 PAYLOAD: {payload}")
 
     r = requests.post(
         URL,
@@ -24,6 +33,6 @@ def send_whatsapp(phone, message):
         timeout=30
     )
 
-    print(r.text)
+    logger.info(f"📬 WHATSAPP API RESPONSE: {r.text}")
 
     return True
