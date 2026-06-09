@@ -52,8 +52,8 @@ async def webhook(request: Request):
 
     send_whatsapp(
         phone=phone,
-        message=reply,
-        workspace_id=workspace_id
+        message=reply
+    
     )
 
     logger.info(f"✅ REPLY SENT TO: {phone} | WORKSPACE: {workspace_id}")
