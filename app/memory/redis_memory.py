@@ -17,6 +17,11 @@ def save_message(phone, role, message):
         f"{role}: {message}"
     )
 
+    redis_client.expire(
+        key,
+        86400
+    )
+
 
 def get_history(phone):
 
@@ -24,6 +29,6 @@ def get_history(phone):
 
     return redis_client.lrange(
         key,
-        0,
+        -20,
         -1
     )

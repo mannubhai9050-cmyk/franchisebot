@@ -6,6 +6,10 @@ from app.vectorstore.qdrant_search import (
     search_knowledge
 )
 
+from app.memory.redis_memory import (
+    get_history
+)
+
 client = OpenAI(
     api_key=OPENAI_API_KEY
 )
@@ -19,18 +23,54 @@ with open(
     SYSTEM_PROMPT = f.read()
 
 
-def get_ai_response(message):
+def need_rag(message):
 
-    knowledge = search_knowledge(
-        message
+    message = message.lower()
+
+    keywords = [
+        "franchise",
+        "fee",
+        "cost",
+        "price",
+        "investment",
+        "profit",
+        "location",
+        "requirement",
+        "document",
+        "training",
+        "royalty"
+    ]
+
+    return any(
+        word in message
+        for word in keywords
     )
 
+
+def get_ai_response(phone, message):
+
+    history = get_history(phone)
+
+    conversation = "\n".join(history)
+
+    knowledge = ""
+
+    if need_rag(message):
+
+        knowledge = search_knowledge(
+            message
+        )
+
     prompt = f"""
+Conversation History:
+
+{conversation}
+
 Knowledge Base:
 
 {knowledge}
 
-User Question:
+Current User Question:
 
 {message}
 """
