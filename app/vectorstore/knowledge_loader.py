@@ -123,5 +123,5 @@ if __name__ == "__main__":
     create_collection()
 
     upload_file(
-        "app/knowledge/limbu_ai_master.txt"
+        "app/knowledge/limbu_ai_master.jsonl"
     )
