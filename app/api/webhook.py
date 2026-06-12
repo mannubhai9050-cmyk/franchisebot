@@ -11,7 +11,8 @@ from app.services.whatsapp import (
 )
 
 from app.memory.redis_memory import (
-    save_message
+    save_message,
+    get_history
 )
 
 logger = logging.getLogger(__name__)
@@ -62,4 +63,11 @@ async def webhook(request: Request):
 
     return {
         "status": "success"
+    }
+
+@router.get("/history/{phone}")
+def history(phone: str):
+    return {
+        "phone": phone,
+        "history": get_history(phone)
     }
